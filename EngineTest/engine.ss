@@ -19,14 +19,29 @@
     (eval code sandbox-env)))
 
 (define (load-cartridge filename)
-  
-  (let ([port (open-input-file filename)])
-    (let loop ([expr (read port)])
-      (if (eof-object? expr)            ;; if end of file
-          (close-input-port port)       ;; close file and finish
-          (begin
-            (eval expr sandbox-env)     ;; else execute code in sandbox
-            (loop (read port)))))))     ;; loop to next line
+  (guard (ex
+            [else 
+              (display "HOT-RELOAD FAILED: Syntax Error in File!\n")
+              (display-condition ex)
+              (newline)])
+     (let ([port (open-input-file filename)])
+       (let loop ([expr (read port)])
+         (if (eof-object? expr)
+             (begin
+               (close-input-port port)
+               (display "Cartridge Loaded Successfully!\n"))
+             (begin
+               ;; We use standard eval here, but it's protected by the guard above!
+               (eval expr sandbox-env)
+               (loop (read port)))))))) 
+ 
+;;  (let ([port (open-input-file filename)])
+;;    (let loop ([expr (read port)])
+;;      (if (eof-object? expr)            ;; if end of file
+;;          (close-input-port port)       ;; close file and finish
+;;          (begin
+;;            (eval expr sandbox-env)     ;; else execute code in sandbox
+;;            (loop (read port)))))))     ;; loop to next line
 
 (init-window 800 450 "Chezray Console")
 (set-target-fps 60)
@@ -37,6 +52,9 @@
   (if (window-should-close?)
       (close-window)
       (begin
+        (if (= (is-key-pressed? 294) 1)
+            (load-cartridge "my_game.ss"))
+        
         (safe-eval '(_update))
         (begin-drawing)
         (safe-eval '(_draw))

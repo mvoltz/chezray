@@ -10,6 +10,11 @@
           make-color
           draw-rectangle
           is-key-down?
+          is-key-pressed?
+          init-audio-device
+          close-audio-device
+          load-sound
+          play-sound
           RAYWHITE
           RED
           )
@@ -25,7 +30,14 @@
 (define window-should-close? (foreign-procedure "WindowShouldClose" () boolean))
 (define clear-background (foreign-procedure "ClearBackground" (unsigned-32) void))
 
-(define is-key-down? (foreign-procedure "IsKeyDown" (int) boolean))
+(define is-key-down? (foreign-procedure "IsKeyDown" (int) unsigned-8))     ;; unsigned-8 instead of boolean
+(define is-key-pressed? (foreign-procedure "IsKeyDown" (int) unsigned-8))  ;; because scheme<->C memory read issue
+                                                                           ;; was reading 4 bytes instead of 1??
+(define init-audio-device (foreign-procedure "InitAudioDevice" () void))
+(define close-audio-device (foreign-procedure "CloseAudioDevice" () void))
+
+(define load-sound (foreign-procedure "LoadSoundPtr" (string) void*))
+(define play-sound (foreign-procedure "PlaySoundPtr" (void*) void))
 
 (define begin-drawing (foreign-procedure "BeginDrawing" () void))   
 (define end-drawing (foreign-procedure "EndDrawing" () void))        
@@ -55,6 +67,7 @@
 
   
 (load-shared-object library-filename)
+(load-shared-object "./audio/audio_wrapper.dll")
 
 ;;CHEATSHEET
 ;;----------

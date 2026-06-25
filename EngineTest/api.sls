@@ -5,7 +5,9 @@
   ;; 1. THE RESTRICTED EXPORTS (What the user is allowed to use)
   (export cls 
           rect
-          btn)
+          btn
+          sfx
+          load-sfx)
   
   ;; 2. THE IMPORTS (What the engine needs to do the heavy lifting)
   (import (chezscheme)
@@ -53,12 +55,23 @@
     (draw-rectangle x y w h (get-color c)))
 
   (define (btn i)
+    (let ([check (lambda (keycode) (= (is-key-down? keycode) 1))])
     (cond
-      [(= i 0) (is-key-down? 263)]
-      [(= i 1) (is-key-down? 262)]
-      [(= i 2) (is-key-down? 265)]
-      [(= i 3) (is-key-down? 264)]
-      [(= i 4) (is-key-down? 90)]
-      [(= i 5) (is-key-down? 88)]
-      [else #f]))
+      [(= i 0) (check 263)]
+      [(= i 1) (check 262)]
+      [(= i 2) (check 265)]
+      [(= i 3) (check 264)]
+      [(= i 4) (check 90)]
+      [(= i 5) (check 88)]
+      [else #f])))
 )
+
+(define sfx-bank (make-vector 64 #f)) ;; 64 slots
+
+(define (load-sfx id filename)
+  (vector-set! sfx-bank id (load-sound filename)))
+
+(define (sfx id)
+  (let ([snd (vector-ref sfx-bank id)])
+    (if snd
+      (play-sound snd))))
