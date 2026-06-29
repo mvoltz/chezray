@@ -64,7 +64,6 @@
       [(= i 4) (check 90)]
       [(= i 5) (check 88)]
       [else #f])))
-)
 
 (define sfx-bank (make-vector 64 #f)) ;; 64 slots
 
@@ -75,3 +74,5 @@
   (let ([snd (vector-ref sfx-bank id)])
     (if snd
       (play-sound snd))))
+
+)
