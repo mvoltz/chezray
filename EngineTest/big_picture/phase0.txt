@@ -1,0 +1,100 @@
+The enemy of my enemy is my friend
+ - The enemy is my ignorance
+ - AI knows C, Scheme, and Raylib better than I do
+ - Utilize AI to learn concepts, scheme, C and raylib - so far it's going well
+ - AI has made a few mistakes but has consistently found, and corrected, its own errors
+
+Summary as of 06/30/2026
+------------------------
+Items we covered:
+
+- Chez scheme has good performance, fast compilation times, and generates highly optimized machine code.
+- Chez's nanopass compiler breaks the compilation process into several manageable passes.
+- Scheme uses prefix notation enclosed in S-expressions.
+- The 'define' keywords binds names to values and creates functions.
+- Example: `(define (square x) (* x x)) ;; a function that squares a number.`
+- Scheme relies on expressions that return values.
+- Control flow expressions 'if' and 'cond'.
+- Literal lists using the quote mark.
+
+Our first small project was a simple password generator.
+We created a recursive loop with the 'let' keyword.
+AI differentiated 'let' and 'let*', where 'let*' evaluates variables in order because an early variable helps define the subsequent variables.  I inferred 'let' cannot have a variable dependency in the body.
+
+Predicates and the 'and' keyword.
+'read' 'display' 'newline' and 'begin' keywords
+
+Improving randomness and several more keywords:
+'random-seed' 
+'time-nanosecond' 
+'random-index' 
+'random-char'
+'current-time'
+'cons'
+
+Rejection sampling, booleans, characters versus strings, and safety checks.
+'list-ref' to pull whole words from a word list, 'string-append' and the concept of composability.
+File I/O, the 'call-with-input-file' 'line' 'get-line' 'words' 'lambda' 'eof-object?' keywords.
+Calling system commands with 'system'.
+'file-exists?' keyword.
+Loading files via 'load' and using libraries.
+C FFI and mapping procedures.
+'load-shared-object' and 'foreign-procedure' keywords.
+Various ways to inspect DLLs to see what is exported:
+1. DLL Export Viewer (NirSoft)
+2. Dependencies (open source)
+3. Dumpbin (command line)
+How to find function signatures from documentation:
+'HWND' (handles) in C are pointers in scheme (void*).
+'LPCWSTR' (long pointer to a constant wide string) requires Unicode or byte-vector FFI tools.
+Initial Raylib calls and how to translate C structs to scheme code, including writing wrappers in C.
+Structuring the raylib library 'raylib.sls'.
+Growing the raylib library as needed rather than mapping all functions and structs at once.
+The scheme rule that function definitions must precede expressions, so 'load-shared-object' must come after the define forms.
+The 'not responding' issue and incorporated the 'begin-drawing' and 'end-drawing' functions.
+The 'set-target-fps' function.
+The 'machine-type' function and how to load shared libraries after querying the system architecture.
+The 'case' conditional.
+Distributing scheme applications.
+  The somewhat deprecated 'petite' scheme interpreter.
+  The ps2exe powershell module and potential issues with it being detected as possible malware.
+Writing a pico-8 like development environment
+Tried using the raygui library but decided against it for now.
+Creating an simplified API for users.
+PICO-8 colors and wrote a test script that uses the API.
+The 'engine' script that loads user code and executes it.
+How to protect the engine from crashes caused by mistakes in user's code, using the 'guard' function.
+The 'copy-environment' function to allow the user's code to 'define' things.
+Extending the api and making the user's game interactive.
+Matching exact numbers in scheme.
+The "Garbage Byte" trap and fixed our movement issues with a 'is-key-down?' predicate
+Hot-reloading the game with the F5 key
+Started covering audio but ran into issues
+
+IN-PROGRESS: show me how to allocate memory for ftype structs and write data to them to avoid memory leaks
+
+Scheme uses garbage collection while C allocates and reclaims memory manually
+Scheme is not allowed to garbage collect in C's realm
+4 steps:
+1. measure with (ftype-sizeof _)
+   ex: (ftype-sizeof rectangle-struct)
+   the Raylib rectangle is made of 4 floats (4 bytes each) == 16 bytes
+2. allocate memory
+   (foreign-alloc 16) is scheme's way of allocating 16 bytes of memory.
+   The operating system grants the request and returns a raw integer address.
+3. define what the memory is
+   (define my-rect (make-ftype-pointer rectangle-struct (foreign-alloc ...)))
+   this maps the struct fields to the correct memory offsets (x, y, width, height)
+4. write the data with (ftype-set!)
+   (ftype-set! rectangle-struct (width) my-rect 160.0) ;; would write 160.0 to the 3rd slot of the 16-byte block
+   
+If we were to put those allocation steps inside the game loop, it would grow continuously 60 times per second.
+Eventually the program would crash.
+This is why we allocate before the loop and (foreign-free ...) right before the window closes
+
+05/30/2026
+
+C pads structs so their memory aligns to boundaries - usually 4 or 8-bit boundaries.
+This is where scheme can get befuddled and possibly return bad results, or crash the app.
+
+

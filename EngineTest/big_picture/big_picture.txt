@@ -1,0 +1,29 @@
+PHASE 0
+ - learn scheme and raylib and C as much as possible
+ - learn fantasy console concepts
+ - make it more than game creation tool (BONUS PHASE)?
+ - 
+
+PHASE 1 - Remove magic numbers
+ - Add configuration file
+ - Flexible color choices
+ - Flexible resolution
+
+PHASE 2 - Separate data from logic
+ - tilemaps outside of code
+ - sprite atlas
+ - custom file format for storing maps, sprites, and code
+
+PHASE 3 - IDE
+ - CLI 
+ - sprite/pixel editor
+ - audio editor
+ - use tools to build tools
+
+PHASE 4 - Packaging and Distribution
+ - compile to executable
+ - intelligent double-click to play game
+
+BONUS PHASES?
+ - multi-player? co-op or networked?
+ - web-hosted game hub?

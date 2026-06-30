@@ -5,9 +5,9 @@
   ;; 1. THE RESTRICTED EXPORTS (What the user is allowed to use)
   (export cls 
           rect
-          btn
-          sfx
-          load-sfx)
+          btn)
+;;          sfx
+;;          load-sfx)
   
   ;; 2. THE IMPORTS (What the engine needs to do the heavy lifting)
   (import (chezscheme)
@@ -67,12 +67,11 @@
 
 (define sfx-bank (make-vector 64 #f)) ;; 64 slots
 
-(define (load-sfx id filename)
-  (vector-set! sfx-bank id (load-sound filename)))
+;;(define (load-sfx id filename)
+''  (vector-set! sfx-bank id (load-sound filename)))
 
-(define (sfx id)
-  (let ([snd (vector-ref sfx-bank id)])
-    (if snd
-      (play-sound snd))))
+;;(define (sfx id)
+;;  (let ([snd (vector-ref sfx-bank id)])
+;;    (if snd
+;;      (play-sound snd))))
 
-)

@@ -1,8 +1,55 @@
+;; https://github.com/raysan5/raylib.com/blob/master/cheatsheet/raylib_core.c
+
 (library (raylib)
   (export init-window
           close-window
-          is-window-ready?
           window-should-close?
+          is-window-ready?
+          is-window-fullscreen?
+          is-window-hidden?
+          is-window-minimized?
+          is-window-maximized?
+          is-window-focused?
+          is-window-resized?
+          is-window-state
+          set-window-state
+          clear-window-state
+          toggle-fullscreen
+          toggle-borderless-windowed
+          maximize-window
+          minimize-window
+          restore-window
+          set-window-icon
+          set-window-icons
+          set-window-title
+          set-window-position
+          set-window-monitor
+          set-window-minsize
+          set-window-maxsize
+          set-window-size
+          set-window-opacity
+          set-window-focused
+          *get-window-handle
+          get-screen-width
+          get-screen-height
+          get-render-width
+          get-render-height
+          get-monitor-count
+          get-current-monitor
+          get-monitor-position
+          get-monitor-width
+          get-monitor-height
+          get-monitor-physical-width
+          get-monitor-physical-height
+          get-monitor-refresh-rate
+          get-window-position
+          get-window-scale-dpi
+          get-monitor-name
+          set-clipboard-text
+          *get-clipboard-text
+          get-clipboard-image
+          enable-event-waiting
+          disable-event-waiting
           begin-drawing
           end-drawing
           set-target-fps
@@ -11,10 +58,6 @@
           draw-rectangle
           is-key-down?
           is-key-pressed?
-          init-audio-device
-          close-audio-device
-          load-sound
-          play-sound
           RAYWHITE
           RED
           )
@@ -23,25 +66,70 @@
 (import (chezscheme))
 
 ;; window related functions
-(define init-window (foreign-procedure "InitWindow" (int int string) void))
-(define close-window (foreign-procedure "CloseWindow" () void))
-(define is-window-ready? (foreign-procedure "IsWindowReady" () boolean))
+;; TODO: Function Signatures
 
-(define window-should-close? (foreign-procedure "WindowShouldClose" () boolean))
-(define clear-background (foreign-procedure "ClearBackground" (unsigned-32) void))
+(define init-window           (foreign-procedure "InitWindow" (int int string) void))
+(define close-window          (foreign-procedure "CloseWindow" () void))
+(define window-should-close?  (foreign-procedure "WindowShouldClose" () boolean))
+(define clear-background      (foreign-procedure "ClearBackground" (unsigned-32) void))
+(define is-window-ready?      (foreign-procedure "IsWindowReady" () boolean))
+(define is-window-fullscreen? (foreign-procedure "IsWindowFullscreen" () boolean))
+(define is-window-hidden?     (foreign-procedure "IsWindowHidden" () boolean))
+(define is-window-minimized?  (foreign-procedure "IsWindowMinimized" () boolean))
+(define is-window-maximized?  (foreign-procedure "IsWindowMaximized" () boolean))
+(define is-window-focused?    (foreign-procedure "IsWindowFocused" () boolean))
+(define is-window-resized?    (foreign-procedure "IsWindowResized" () boolean))
+(define is-window-state       (foreign-procedure "IsWindowState" () boolean))
+(define set-window-state      (foreign-procedure "SetWindowState" () boolean))
+(define clear-window-state    (foreign-procedure "ClearWindowState" () boolean))
+(define toggle-fullscreen     (foreign-procedure "ToggleFullscreen" () boolean))
+(define toggle-borderless-windowed     (foreign-procedure "ToggleBorderlessWindowed" () boolean))
+(define maximize-window       (foreign-procedure "MaximizeWindow" () boolean))
+(define minimize-window       (foreign-procedure "MinimizeWindow" () boolean))
+(define restore-window        (foreign-procedure "RestoreWindow" () boolean))
+(define set-window-icon       (foreign-procedure "SetWindowIcon" () boolean))
+(define set-window-icons      (foreign-procedure "SetWindowIcons" () boolean))
+(define set-window-title      (foreign-procedure "SetWindowTitle" () boolean))
+(define set-window-position   (foreign-procedure "SetWindowPosition" () boolean))
+(define set-window-monitor    (foreign-procedure "SetWindowMonitor" () boolean))
+(define set-window-minsize    (foreign-procedure "SetWindowMinSize" () boolean))
+(define set-window-maxsize    (foreign-procedure "SetWindowMaxSize" () boolean))
+(define set-window-size       (foreign-procedure "SetWindowSize" () boolean))
+(define set-window-opacity    (foreign-procedure "SetWindowOpacity" () boolean))
+(define set-window-focused    (foreign-procedure "SetWindowFocused" () boolean))
+(define *get-window-handle    (foreign-procedure "GetWindowHandle" () boolean))
+(define get-screen-width      (foreign-procedure "GetScreenHeight" () boolean))
+(define get-screen-height     (foreign-procedure "GetScreenWidth" () boolean))
+(define get-render-width      (foreign-procedure "GetRenderWidth" () boolean))
+(define get-render-height     (foreign-procedure "GetRenderHeight" () boolean))
+(define get-monitor-count     (foreign-procedure "GetMonitorCount" () boolean))
+(define get-current-monitor   (foreign-procedure "GetCurrentMonitor" () boolean))
+(define get-monitor-position  (foreign-procedure "GetMonitorPosition" () boolean))
+(define get-monitor-width     (foreign-procedure "GetMonitorWidth" () boolean))
+(define get-monitor-height    (foreign-procedure "GetMonitorHeight" () boolean))
+(define get-monitor-physical-width  (foreign-procedure "GetMonitorPhysicalWidth" () boolean))
+(define get-monitor-physical-height (foreign-procedure "GetMonitorPhysicalHeight" () boolean))
+(define get-monitor-refresh-rate    (foreign-procedure "GetMonitorRefreshRate" () boolean))
+(define get-window-position   (foreign-procedure "GetWindowPosition" () boolean))
+(define get-window-scale-dpi  (foreign-procedure "GetWindowScaleDPI" () boolean))
+(define get-monitor-name      (foreign-procedure "GetMonitorName" () boolean))
+(define set-clipboard-text    (foreign-procedure "SetClipboardText" () boolean))
+(define *get-clipboard-text   (foreign-procedure "GetClipboardText" () boolean))
+(define get-clipboard-image   (foreign-procedure "GetClipboardImage" () boolean))
+(define enable-event-waiting  (foreign-procedure "EnableEventWaiting" () boolean))
+(define disable-event-waiting (foreign-procedure "DisableEventWaiting" () boolean))
+(define is-key-down?          (foreign-procedure "IsKeyDown" (int) unsigned-8))     ;; unsigned-8 instead of boolean
+(define is-key-pressed?       (foreign-procedure "IsKeyDown" (int) unsigned-8))     ;; because scheme<->C memory read issue
+                                                                                    ;; was reading 4 bytes instead of 1??
+;; (define init-audio-device (foreign-procedure "InitAudioDevice" () void))
+;; (define close-audio-device (foreign-procedure "CloseAudioDevice" () void))
 
-(define is-key-down? (foreign-procedure "IsKeyDown" (int) unsigned-8))     ;; unsigned-8 instead of boolean
-(define is-key-pressed? (foreign-procedure "IsKeyDown" (int) unsigned-8))  ;; because scheme<->C memory read issue
-                                                                           ;; was reading 4 bytes instead of 1??
-(define init-audio-device (foreign-procedure "InitAudioDevice" () void))
-(define close-audio-device (foreign-procedure "CloseAudioDevice" () void))
+;; (define load-sound (foreign-procedure "LoadSoundPtr" (string) void*))
+;; (define play-sound (foreign-procedure "PlaySoundPtr" (void*) void))
 
-(define load-sound (foreign-procedure "LoadSoundPtr" (string) void*))
-(define play-sound (foreign-procedure "PlaySoundPtr" (void*) void))
-
-(define begin-drawing (foreign-procedure "BeginDrawing" () void))   
-(define end-drawing (foreign-procedure "EndDrawing" () void))        
-(define set-target-fps (foreign-procedure "SetTargetFPS" (int) void)) 
+(define begin-drawing         (foreign-procedure "BeginDrawing" () void))   
+(define end-drawing           (foreign-procedure "EndDrawing" () void))        
+(define set-target-fps        (foreign-procedure "SetTargetFPS" (int) void)) 
 
 ;; 5. Define your helpers and constants
 (define (make-color r g b a)
